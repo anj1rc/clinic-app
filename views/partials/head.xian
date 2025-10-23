@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="MBC Bongabong Campus Clinic — student health services, consultations, and medicine dispensing.">
+  <link rel="icon" href="/favicon.ico" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- DataTables CSS -->
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css" />
+  <title>MBC Bongabong Campus Clinic - {{title}}</title>
+  <style>
+    /* small page-level tweaks */
+    .hero-gradient { background: linear-gradient(90deg,#0ea5a4 0%, #06b6d4 100%);} 
+  </style>
+</head>

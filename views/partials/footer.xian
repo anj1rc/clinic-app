@@ -1,0 +1,37 @@
+<footer class="mt-12 bg-gray-100 py-8 text-sm">
+  <div class="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+    <div>
+      <h4 class="font-semibold">MBC Bongabong Campus Clinic</h4>
+      <p class="text-gray-600 mt-2">Student health services, consultations, medicine dispensing.</p>
+    </div>
+    <div>
+      <h4 class="font-semibold">Contact</h4>
+      <p class="text-gray-600 mt-2">Phone: (02) 1234-5678</p>
+      <p class="text-gray-600">Email: clinic@mbc-bongabong.edu.ph</p>
+    </div>
+    <div>
+      <h4 class="font-semibold">Address</h4>
+      <p class="text-gray-600 mt-2">MBC Bongabong Campus, Bongabong, Oriental Mindoro</p>
+    </div>
+  </div>
+  <div class="mt-6 text-center text-gray-500">&copy; 2025 MBC Bongabong Campus Clinic</div>
+</footer>
+<!-- jQuery and DataTables -->
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script>
+  // Initialize DataTables for any table with class 'datatable'
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      if (window.jQuery && $.fn.dataTable) {
+        document.querySelectorAll('table.datatable').forEach(tbl => {
+          $(tbl).DataTable();
+        });
+      }
+    } catch (e) {
+      console.warn('DataTables init error', e);
+    }
+  });
+</script>
+</body>
+</html>

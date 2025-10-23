@@ -1,0 +1,10 @@
+<aside class="w-64 bg-white border p-4 rounded">
+  <h3 class="font-semibold mb-3">Staff Menu</h3>
+  <ul class="space-y-2 text-sm">
+    <li><a href="/staff/dashboard" class="block text-blue-600">Overview</a></li>
+    <li><a href="/staff/patients" class="block">Patients</a></li>
+    <li><a href="/staff/appointments" class="block">Appointments</a></li>
+    <li><a href="/staff/notes" class="block">Notes</a></li>
+    <li><a href="/inventory/medicines" class="block">Inventory</a></li>
+  </ul>
+</aside>

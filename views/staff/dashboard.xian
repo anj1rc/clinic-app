@@ -1,0 +1,14 @@
+{{> head }}
+<body class="bg-white">
+  {{> navbar }}
+  <div class="container mx-auto px-4 py-8">
+    <div class="flex gap-6">
+      {{> sidebar-staff }}
+      <main class="flex-1 bg-white p-6 rounded border">
+        <h1 class="text-2xl font-bold">Staff Dashboard</h1>
+        <p class="mt-2">Welcome, <strong>{{currentUser.name}}</strong> — Role: {{currentUser.role}}</p>
+        <p class="mt-4">Staff area: patient lists, appointments, and notes.</p>
+      </main>
+    </div>
+  </div>
+{{> footer }}

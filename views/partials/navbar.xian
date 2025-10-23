@@ -1,0 +1,21 @@
+<header class="hero-gradient text-white py-6">
+  <div class="container mx-auto px-4 flex items-center justify-between">
+    <div>
+      <a href="/" class="text-xl font-bold">MBC Bongabong Campus Clinic</a>
+      <p class="text-teal-100 text-sm">Student health services • Consultation • Medicine dispensing</p>
+    </div>
+    <div>
+      {{#if currentUser}}
+        <div class="text-right">
+          <div class="text-sm">Hello, <strong>{{currentUser.name}}</strong></div>
+          <a href="/dashboard" class="inline-block mt-2 bg-white text-teal-700 px-3 py-1 rounded">Dashboard</a>
+        </div>
+      {{else}}
+        <div class="space-x-2">
+          <a href="/login" class="bg-white text-teal-700 px-3 py-1 rounded">Login</a>
+          <a href="/register" class="bg-teal-800/30 text-white px-3 py-1 rounded">Register</a>
+        </div>
+      {{/if}}
+    </div>
+  </div>
+</header>

@@ -1,0 +1,163 @@
+{{> head }}
+<body class="bg-white">
+  {{> navbar }}
+<div class="container mx-auto px-4 py-8">
+  <div class="flex items-center justify-between mb-6">
+    <h1 class="text-2xl font-bold">Manage Medicines</h1>
+    <button id="btnAdd" class="bg-teal-600 text-white px-4 py-2 rounded">Add Medicine</button>
+  </div>
+
+  {{#if error}}
+    <div class="bg-red-100 text-red-700 p-3 rounded mb-4">{{error}}</div>
+  {{/if}}
+
+  <div class="bg-white rounded shadow overflow-hidden">
+  <table class="min-w-full datatable" id="medTable">
+      <thead class="bg-gray-50">
+        <tr>
+          <th class="px-4 py-2 text-left">Name</th>
+          <th class="px-4 py-2 text-left">SKU</th>
+          <th class="px-4 py-2 text-left">Stock</th>
+          <th class="px-4 py-2 text-left">Unit</th>
+          <th class="px-4 py-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each meds}}
+        <tr class="border-t" data-id="{{this.id}}" data-name="{{this.name}}" data-sku="{{this.sku}}" data-stock="{{this.stock}}" data-unit="{{this.unit}}">
+          <td class="px-4 py-2">{{this.name}}</td>
+          <td class="px-4 py-2">{{this.sku}}</td>
+          <td class="px-4 py-2">{{this.stock}}</td>
+          <td class="px-4 py-2">{{this.unit}}</td>
+          <td class="px-4 py-2">
+            <button class="viewBtn text-gray-700 mr-2">View</button>
+            <button class="editBtn text-blue-600 mr-2">Edit</button>
+            <button class="deleteBtn text-red-600">Delete</button>
+          </td>
+        </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Modals -->
+<!-- Add / Edit Modal -->
+<div id="modalForm" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white w-full max-w-lg rounded shadow p-6">
+    <h2 id="modalTitle" class="text-xl font-semibold mb-4">Add Medicine</h2>
+    <form id="medicineForm" method="post" action="/admin/inventory/medicines/new" class="space-y-4">
+      <div>
+        <label class="block text-sm font-medium">Name</label>
+        <input name="name" id="m_name" class="mt-1 block w-full border rounded px-3 py-2" required />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">SKU</label>
+        <input name="sku" id="m_sku" class="mt-1 block w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Stock</label>
+        <input name="stock" id="m_stock" type="number" min="0" value="0" class="mt-1 block w-full border rounded px-3 py-2" />
+      </div>
+      <div>
+        <label class="block text-sm font-medium">Unit</label>
+        <input name="unit" id="m_unit" class="mt-1 block w-full border rounded px-3 py-2" />
+      </div>
+      <div class="flex justify-end">
+        <button type="button" id="modalCancel" class="mr-3 text-gray-600">Cancel</button>
+        <button type="submit" class="bg-teal-600 text-white px-4 py-2 rounded" id="modalSubmit">Save</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- View Modal -->
+<div id="modalView" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white w-full max-w-md rounded shadow p-6">
+    <h2 class="text-xl font-semibold mb-4">Medicine Details</h2>
+    <div class="space-y-2 text-gray-700">
+      <div><strong>Name:</strong> <span id="v_name"></span></div>
+      <div><strong>SKU:</strong> <span id="v_sku"></span></div>
+      <div><strong>Stock:</strong> <span id="v_stock"></span></div>
+      <div><strong>Unit:</strong> <span id="v_unit"></span></div>
+    </div>
+    <div class="mt-6 text-right">
+      <button id="viewClose" class="text-gray-600">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="modalDelete" class="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 hidden">
+  <div class="bg-white w-full max-w-sm rounded shadow p-6">
+    <h3 class="text-lg font-semibold">Delete Medicine</h3>
+    <p class="mt-2 text-gray-700">Are you sure you want to delete <strong id="d_name"></strong>?</p>
+    <form id="deleteForm" method="post" action="" class="mt-4 text-right">
+      <button type="button" id="deleteCancel" class="mr-3 text-gray-600">Cancel</button>
+      <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded">Delete</button>
+    </form>
+  </div>
+</div>
+
+<script>
+  const modalForm = document.getElementById('modalForm');
+  const modalView = document.getElementById('modalView');
+  const modalDelete = document.getElementById('modalDelete');
+  const btnAdd = document.getElementById('btnAdd');
+  const modalTitle = document.getElementById('modalTitle');
+  const medicineForm = document.getElementById('medicineForm');
+  const modalCancel = document.getElementById('modalCancel');
+  const modalSubmit = document.getElementById('modalSubmit');
+
+  btnAdd.addEventListener('click', () => {
+    modalTitle.textContent = 'Add Medicine';
+    medicineForm.action = '/admin/inventory/medicines/new';
+    document.getElementById('m_name').value = '';
+    document.getElementById('m_sku').value = '';
+    document.getElementById('m_stock').value = 0;
+    document.getElementById('m_unit').value = '';
+    modalForm.classList.remove('hidden');
+  });
+
+  modalCancel.addEventListener('click', () => modalForm.classList.add('hidden'));
+
+  document.getElementById('viewClose').addEventListener('click', () => modalView.classList.add('hidden'));
+
+  document.getElementById('deleteCancel').addEventListener('click', () => modalDelete.classList.add('hidden'));
+
+  // Row buttons
+  document.querySelectorAll('#medTable tbody tr').forEach(row => {
+    const id = row.dataset.id;
+    const name = row.dataset.name;
+    const sku = row.dataset.sku;
+    const stock = row.dataset.stock;
+    const unit = row.dataset.unit;
+
+    row.querySelector('.viewBtn').addEventListener('click', () => {
+      document.getElementById('v_name').textContent = name;
+      document.getElementById('v_sku').textContent = sku || '-';
+      document.getElementById('v_stock').textContent = stock;
+      document.getElementById('v_unit').textContent = unit || '-';
+      modalView.classList.remove('hidden');
+    });
+
+    row.querySelector('.editBtn').addEventListener('click', () => {
+      modalTitle.textContent = 'Edit Medicine';
+      medicineForm.action = '/admin/inventory/medicines/' + id + '/edit';
+      document.getElementById('m_name').value = name;
+      document.getElementById('m_sku').value = sku;
+      document.getElementById('m_stock').value = stock;
+      document.getElementById('m_unit').value = unit;
+      modalForm.classList.remove('hidden');
+    });
+
+    row.querySelector('.deleteBtn').addEventListener('click', () => {
+      document.getElementById('d_name').textContent = name;
+      const deleteForm = document.getElementById('deleteForm');
+      deleteForm.action = '/admin/inventory/medicines/' + id + '/delete';
+      modalDelete.classList.remove('hidden');
+    });
+  });
+</script>
+
+{{> footer }}

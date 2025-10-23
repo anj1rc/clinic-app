@@ -1,0 +1,39 @@
+{{> head }}
+<body class="bg-white">
+  {{> navbar }}
+
+  <section class="container mx-auto px-4 py-12">
+  <div class="grid md:grid-cols-3 gap-6">
+      <div class="p-6 bg-white rounded shadow">
+        <h3 class="font-semibold">Open Hours</h3>
+        <p class="mt-2 text-gray-600">Mon - Fri: 8:00 AM - 5:00 PM</p>
+      </div>
+      <div class="p-6 bg-white rounded shadow">
+        <h3 class="font-semibold">Services</h3>
+        <ul class="mt-2 text-gray-600 list-disc list-inside">
+          <li>Walk-in consultations</li>
+          <li>Medicine dispensing</li>
+          <li>Health education</li>
+        </ul>
+      </div>
+      <div class="p-6 bg-white rounded shadow">
+        <h3 class="font-semibold">Quick Links</h3>
+        <ul class="mt-2 text-gray-600">
+          {{#if showInventory}}
+            <li><a href="/inventory/medicines" class="text-teal-600">Inventory</a></li>
+            <li><a href="/inventory/handouts" class="text-teal-600">Handouts</a></li>
+          {{/if}}
+          <li><a href="/contact" class="text-teal-600">Contact Us</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="bg-gray-50 py-12">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-2xl font-bold">Why choose our clinic?</h2>
+      <p class="mt-4 text-gray-600">We provide accessible, friendly, and confidential health services for students and staff.</p>
+    </div>
+  </section>
+
+  {{> footer }}

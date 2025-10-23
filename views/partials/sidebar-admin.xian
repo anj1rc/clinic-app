@@ -1,0 +1,10 @@
+<aside class="w-64 bg-white border p-4 rounded">
+  <h3 class="font-semibold mb-3">Admin Menu</h3>
+  <ul class="space-y-2 text-sm">
+    <li><a href="/admin/dashboard" class="block text-blue-600">Overview</a></li>
+    <li><a href="/admin/users" class="block">Manage Users</a></li>
+    <li><a href="/admin/settings" class="block">Site Settings</a></li>
+    <li><a href="/admin/reports" class="block">Reports</a></li>
+    <li><a href="/inventory/medicines" class="block">Inventory</a></li>
+  </ul>
+</aside>

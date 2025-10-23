@@ -1,0 +1,8 @@
+<aside class="w-64 bg-white border p-4 rounded">
+  <h3 class="font-semibold mb-3">User Menu</h3>
+  <ul class="space-y-2 text-sm">
+    <li><a href="/user/dashboard" class="block text-blue-600">Overview</a></li>
+    <li><a href="/user/appointments" class="block">My Appointments</a></li>
+    <li><a href="/user/profile" class="block">Profile</a></li>
+  </ul>
+</aside>
