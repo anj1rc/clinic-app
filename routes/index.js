@@ -30,8 +30,9 @@ router.get("/", homePage);
 
 import { loginPage, registerPage, forgotPasswordPage, dashboardPage, loginUser, registerUser, logoutUser } from "../controllers/authController.js";
 import { adminDashboard, adminUsers, adminSettings, adminReports } from "../controllers/adminController.js";
+import { adminProfile, adminNotifications, adminMarkRead, adminDeleteNotification, adminChangePasswordPage, adminChangePassword } from "../controllers/adminController.js";
 import { staffDashboard, staffPatients, staffAppointments, staffNotes } from "../controllers/staffController.js";
-import { userDashboard, userAppointments, userProfile } from "../controllers/userController.js";
+import { userDashboard, userAppointments, userProfile, userNewAppointment, userCreateAppointment, userHandouts, userNewHandout, userCreateHandout, userNotifications, userMarkRead, userDeleteNotification, userNotificationCounts } from "../controllers/userController.js";
 import inventoryController from "../controllers/inventoryController.js";
 import inventoryAdminController from "../controllers/inventoryAdminController.js";
 
@@ -48,6 +49,15 @@ router.get('/admin/dashboard', adminDashboard);
 router.get('/admin/users', adminUsers);
 router.get('/admin/settings', adminSettings);
 router.get('/admin/reports', adminReports);
+router.post('/admin/users/:id/edit', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, async (req, res, next) => { try { const { adminUpdateUser } = await import('../controllers/adminController.js'); return adminUpdateUser(req,res); } catch(e){ next(e); } });
+router.post('/admin/users/:id/delete', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, async (req, res, next) => { try { const { adminDeleteUser } = await import('../controllers/adminController.js'); return adminDeleteUser(req,res); } catch(e){ next(e); } });
+router.get('/admin/profile', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, adminProfile);
+router.get('/admin/notifications', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, adminNotifications);
+router.post('/admin/notifications/:id/mark-read', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, adminMarkRead);
+router.post('/admin/notifications/:id/delete', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, adminDeleteNotification);
+// change password
+router.get('/admin/change-password', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, adminChangePasswordPage);
+router.post('/admin/change-password', (req, res, next) => { if (req.session?.userRole !== 'admin') return res.status(403).render('home', { error: 'Access denied' }); next(); }, adminChangePassword);
 router.get('/staff/dashboard', staffDashboard);
 router.get('/staff/patients', staffPatients);
 router.get('/staff/appointments', staffAppointments);
@@ -55,6 +65,23 @@ router.get('/staff/notes', staffNotes);
 router.get('/user/dashboard', userDashboard);
 router.get('/user/appointments', userAppointments);
 router.get('/user/profile', userProfile);
+
+// User notifications
+router.get('/user/notifications', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userNotifications);
+router.post('/user/notifications/:id/mark-read', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userMarkRead);
+router.post('/user/notifications/:id/delete', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userDeleteNotification);
+
+// minimal API for user notification counts (used by client-side badge)
+router.get('/api/user/notification-counts', (req, res, next) => { if (!req.session?.userId) return res.status(401).json({ error: 'Unauthenticated' }); next(); }, userNotificationCounts);
+
+// Appointment booking (user-facing)
+router.get('/appointments/new', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userNewAppointment);
+router.post('/appointments/new', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userCreateAppointment);
+
+// User handouts / prescriptions
+router.get('/user/handouts', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userHandouts);
+router.get('/handouts/new', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userNewHandout);
+router.post('/handouts/new', (req, res, next) => { if (!req.session?.userId) return res.redirect('/login'); next(); }, userCreateHandout);
 
 // Contact page
 router.get('/contact', (req, res) => res.render('contact'));

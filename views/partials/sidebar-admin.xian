@@ -1,10 +1,54 @@
-<aside class="w-64 bg-white border p-4 rounded">
-  <h3 class="font-semibold mb-3">Admin Menu</h3>
-  <ul class="space-y-2 text-sm">
-    <li><a href="/admin/dashboard" class="block text-blue-600">Overview</a></li>
-    <li><a href="/admin/users" class="block">Manage Users</a></li>
-    <li><a href="/admin/settings" class="block">Site Settings</a></li>
-    <li><a href="/admin/reports" class="block">Reports</a></li>
-    <li><a href="/inventory/medicines" class="block">Inventory</a></li>
-  </ul>
-</aside>
+<aside id="site-sidebar" class="site-sidebar fixed inset-y-0 left-0 z-40 bg-white border-r p-4 transform -translate-x-full transition-transform duration-200 md:relative md:translate-x-0 md:inset-auto md:static md:block md:w-64" aria-label="Admin sidebar">
+  <div class="flex items-center justify-between mb-3">
+    <div class="flex items-center gap-3">
+      <a href="/admin/dashboard" class="text-lg font-bold">MBC Clinic</a>
+      <span class="text-xs text-gray-500">Admin</span>
+    </div>
+    <div class="flex items-center gap-2">
+      <!-- notifications -->
+      <a href="/admin/notifications" class="relative inline-flex p-1 rounded hover:bg-gray-100" aria-label="Notifications">
+        <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 10-12 0v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+        {{#if notifCount}}
+        <span id="notif-count" class="absolute -top-1 -right-1 inline-flex items-center justify-center px-1.5 py-0.5 text-xs font-semibold leading-none text-white bg-red-600 rounded-full">{{notifCount}}</span>
+        {{/if}}
+      </a>
+      <!-- profile -->
+      <a href="/admin/profile" class="inline-flex items-center gap-2 p-1 rounded hover:bg-gray-100" aria-label="Profile">
+        <img src="{{#if user}}{{user.avatarUrl}}{{else}}/images/avatar-placeholder.png{{/if}}" alt="Profile" class="w-7 h-7 rounded-full object-cover" />
+        {{#if user}}<span class="hidden md:inline text-sm text-gray-700">{{user.name}}</span>{{/if}}
+      </a>
+      <!-- (no desktop hamburger to keep sidebar simple) -->
+    </div>
+  </div>
+
+  <nav class="mb-4">
+    <ul class="sidebar-links space-y-2 text-sm">
+      <li><a href="/admin/dashboard" class="sidebar-link">Overview</a></li>
+      <li><a href="/admin/users" class="sidebar-link">Manage Users</a></li>
+      <li>
+        <details class="group">
+            <ul class="sidebar-links space-y-2 text-sm">
+              <li><a href="/admin/dashboard" class="sidebar-link">Overview</a></li>
+              <li><a href="/admin/users" class="sidebar-link">Manage Users</a></li>
+              <li>
+                <details class="group">
+                  <summary class="sidebar-link cursor-pointer">Inventory</summary>
+                  <ul class="pl-4 mt-2 space-y-1">
+                    <li><a href="/inventory/medicines" class="sidebar-link">Medicines</a></li>
+                    <li><a href="/inventory/handouts" class="sidebar-link">Handouts</a></li>
+                  </ul>
+                </details>
+              </li>
+              <li><a href="/appointments" class="sidebar-link">Appointments</a></li>
+              <li><a href="/admin/reports" class="sidebar-link">Reports</a></li>
+              <li><a href="/admin/settings" class="sidebar-link">Site Settings</a></li>
+              <li>
+                <a href="/admin/notifications" class="sidebar-link">
+                  Notifications 
+                  {{#if notifCount}}
+                  <span class="ml-2 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-red-600 text-white rounded">{{notifCount}}</span>
+                  {{/if}}
+                </a>
+              </li>
+              <li><a href="/logout" class="sidebar-link text-red-600">Sign Out</a></li>
+            </ul>

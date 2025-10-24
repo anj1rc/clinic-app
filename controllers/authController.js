@@ -25,7 +25,7 @@
     */
     
 import bcrypt from "bcrypt";
-import { User } from "../models/index.js";
+import { User, Notification } from "../models/index.js";
 import { sequelize } from "../models/db.js";
 await sequelize.sync();
 
@@ -84,6 +84,17 @@ export const registerUser = async (req, res) => {
   const user = await User.create({ name, email, password: hashed, role: safeRole });
   req.session.userId = user.id;
   req.session.userRole = user.role;
+  // create audit log for registration
+  try {
+    try { await Notification.sync({ alter: true }); } catch(e){ console.warn('Notification.sync alter failed', e); }
+    await Notification.create({
+      actorId: req.session?.userRole === 'admin' ? req.session.userId : null,
+      targetUserId: user.id,
+      action: 'user.create',
+      title: 'User registered',
+      message: `User ${user.name} (${user.email}) was created`,
+    });
+  } catch (e) { console.warn('registerUser log create failed', e); }
   // redirect to role-specific dashboard
   if (user.role === 'admin') return res.redirect('/admin/dashboard');
   if (user.role === 'staff') return res.redirect('/staff/dashboard');

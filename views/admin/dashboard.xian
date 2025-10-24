@@ -1,14 +1,122 @@
 {{> head }}
-<body class="bg-white">
-  {{> navbar }}
-  <div class="container mx-auto px-4 py-8">
-    <div class="flex gap-6">
-      {{> sidebar-admin }}
-      <main class="flex-1 bg-white p-6 rounded border">
-        <h1 class="text-2xl font-bold">Admin Dashboard</h1>
-        <p class="mt-2">Welcome, <strong>{{currentUser.name}}</strong> — Role: {{currentUser.role}}</p>
-        <p class="mt-4">Admin area: manage users, settings, and reports.</p>
-      </main>
+<body class="bg-gray-50 min-h-screen">
+
+  <div class="flex min-h-screen">
+    {{> sidebar-admin }}
+
+    <main class="main-shift flex-1 p-4 sm:p-6 lg:p-8 pb-20 md:pb-8">
+    <div class="max-w-7xl mx-auto">
+      <!-- Welcome Header -->
+      <div class="bg-white rounded-xl shadow-md p-6 sm:p-8 mb-6">
+        <div class="flex items-start justify-between flex-wrap gap-4">
+          <div>
+            <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Admin Dashboard</h1>
+            <p class="mt-2 text-gray-600">Welcome, <strong class="text-green-600">Admin User</strong> — Role: <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">Administrator</span></p>
+          </div>
+          <div class="flex gap-2">
+            <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium">
+              Quick Actions
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6">
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 font-medium">Total Users</p>
+              <p class="text-2xl font-bold text-gray-800 mt-1">{{#if stats}}{{stats.userCount}}{{else}}0{{/if}}</p>
+            </div>
+            <div class="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-green-600 mt-2">{{#if stats}}{{stats.userChangeText}}{{/if}}</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 font-medium">Active Staff</p>
+              <p class="text-2xl font-bold text-gray-800 mt-1">{{#if stats}}{{stats.staffCount}}{{else}}0{{/if}}</p>
+            </div>
+            <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-green-600 mt-2">{{#if stats}}{{stats.staffChangeText}}{{/if}}</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 font-medium">Consultations</p>
+              <p class="text-2xl font-bold text-gray-800 mt-1">{{#if stats}}{{stats.consultationsCount}}{{else}}0{{/if}}</p>
+            </div>
+            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-gray-600 mt-2">{{#if stats}}{{stats.consultationsChangeText}}{{/if}}</p>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-md p-6 hover:shadow-lg transition-shadow">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-gray-600 font-medium">Medicines</p>
+              <p class="text-2xl font-bold text-gray-800 mt-1">{{#if stats}}{{stats.medicineCount}}{{else}}0{{/if}}</p>
+            </div>
+            <div class="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+              <svg class="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+            </div>
+          </div>
+          <p class="text-xs text-red-600 mt-2">{{#if stats}}{{#if stats.lowStockCount}}{{stats.lowStockCount}} low stock items{{/if}}{{/if}}</p>
+        </div>
+      </div>
+
+      <!-- Content Section -->
+      <div class="bg-white rounded-xl shadow-md p-6 sm:p-8">
+        <h2 class="text-xl font-bold text-gray-800 mb-4">Quick Overview</h2>
+        <p class="text-gray-600 leading-relaxed">Admin area: manage users, settings, and reports. Use the sidebar to navigate through different sections of the admin panel. You have full access to all system features and configurations.</p>
+        
+        <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <a href="/admin/users" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-500 hover:shadow-md transition-all group">
+            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800 group-hover:text-green-600 transition-colors">Manage Users</h3>
+              <p class="text-sm text-gray-600">Add, edit, or remove users</p>
+            </div>
+          </a>
+
+          <a href="/admin/reports" class="flex items-center gap-3 p-4 border border-gray-200 rounded-lg hover:border-green-500 hover:shadow-md transition-all group">
+            <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center group-hover:bg-green-200 transition-colors">
+              <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+              </svg>
+            </div>
+            <div>
+              <h3 class="font-semibold text-gray-800 group-hover:text-green-600 transition-colors">View Reports</h3>
+              <p class="text-sm text-gray-600">Analytics and insights</p>
+            </div>
+          </a>
+        </div>
+      </div>
     </div>
+    </main>
   </div>
-{{> footer }}
+
+  {{> footer }}

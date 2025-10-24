@@ -6,8 +6,8 @@
     </div>
     <div>
       <h4 class="font-semibold">Contact</h4>
-      <p class="text-gray-600 mt-2">Phone: (02) 1234-5678</p>
-      <p class="text-gray-600">Email: clinic@mbc-bongabong.edu.ph</p>
+      <p class="text-gray-600 mt-2">Phone: 09876543210</p>
+      <p class="text-gray-600">Email: mbcclinic@minsu.edu.ph</p>
     </div>
     <div>
       <h4 class="font-semibold">Address</h4>
@@ -16,6 +16,8 @@
   </div>
   <div class="mt-6 text-center text-gray-500">&copy; 2025 MBC Bongabong Campus Clinic</div>
 </footer>
+<!-- sidebar overlay (used by mobile sidebars) -->
+<div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-25 z-30 hidden" aria-hidden="true"></div>
 <!-- jQuery and DataTables -->
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
@@ -23,14 +25,243 @@
   // Initialize DataTables for any table with class 'datatable'
   document.addEventListener('DOMContentLoaded', function() {
     try {
-      if (window.jQuery && $.fn.dataTable) {
+      // DataTables registers either $.fn.dataTable (namespace) or $.fn.DataTable (factory).
+      if (window.jQuery && ( $.fn.dataTable || $.fn.DataTable )) {
         document.querySelectorAll('table.datatable').forEach(tbl => {
-          $(tbl).DataTable();
+          try { $(tbl).DataTable(); } catch(err) { try { $(tbl).dataTable(); } catch(e){ console.warn('DataTable init failed for table', tbl, e); } }
         });
+      } else {
+        console.warn('jQuery or DataTables not available yet; logs table will remain plain HTML');
       }
     } catch (e) {
       console.warn('DataTables init error', e);
     }
+  });
+</script>
+<script>
+  // Clone sidebar links into mobile bottom nav so mobile shows the same items
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      const sidebar = document.getElementById('site-sidebar');
+      const bottom = document.getElementById('site-bottom-nav');
+      if (!sidebar || !bottom) return;
+      // find the list of links inside the sidebar
+      const source = sidebar.querySelector('.sidebar-links');
+      if (!source) return;
+      // create a compact container
+      const container = bottom.querySelector('.max-w-screen-xl') || bottom;
+      // clear existing children
+      container.innerHTML = '';
+      // For each anchor in the source, create a mobile-friendly anchor
+      source.querySelectorAll('a').forEach(a => {
+        const href = a.getAttribute('href') || '#';
+        const text = a.textContent.trim();
+        const mobileA = document.createElement('a');
+        mobileA.href = href;
+        mobileA.className = 'flex-1 text-center py-2 sidebar-link text-xs';
+        mobileA.textContent = text;
+        // copy badge if present (for notifications)
+        const badge = a.querySelector('span');
+        if (badge && badge.textContent.trim()) {
+          const b = document.createElement('span');
+          b.className = 'ml-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-red-600 text-white rounded';
+          b.textContent = badge.textContent.trim();
+          mobileA.appendChild(b);
+        }
+        container.appendChild(mobileA);
+      });
+    } catch (e) { console.warn('mobile sidebar clone failed', e); }
+  });
+</script>
+<script>
+  // Global UI helpers: apply saved theme, confirm logout, and show simple toasts for flash messages
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      // Apply saved theme globally
+      const saved = localStorage.getItem('siteTheme');
+      if (saved === 'dark') document.body.classList.add('dark');
+
+      // Attach logout confirmation
+      document.querySelectorAll('a[href="/logout"]').forEach(a => {
+        a.addEventListener('click', function(e) {
+          const ok = confirm('Are you sure you want to log out?');
+          if (!ok) e.preventDefault();
+        });
+      });
+
+      // Simple toast for flash messages (if server rendered them into res.locals)
+      const success = document.querySelector('.flash-success');
+      const error = document.querySelector('.flash-error');
+      if (success) {
+        // show briefly
+        success.style.position = 'fixed'; success.style.right = '1rem'; success.style.top = '1rem'; success.style.zIndex = 60;
+        setTimeout(() => { try { success.style.display = 'none'; } catch (e){} }, 4000);
+      }
+      if (error) {
+        error.style.position = 'fixed'; error.style.right = '1rem'; error.style.top = '1rem'; error.style.zIndex = 60;
+        setTimeout(() => { try { error.style.display = 'none'; } catch (e){} }, 6000);
+      }
+    } catch (e) { console.warn('global footer helpers error', e); }
+  });
+</script>
+<script>
+  // Sidebar toggle and active link highlighting
+  document.addEventListener('DOMContentLoaded', function() {
+  const toggle = document.getElementById('sidebar-toggle');
+  const sidebar = document.getElementById('site-sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  // collapseBtn kept for backward compatibility if present
+  const collapseBtn = document.getElementById('sidebar-collapse');
+
+    function openSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.remove('-translate-x-full');
+      sidebar.classList.add('translate-x-0');
+      if (overlay) overlay.classList.remove('hidden');
+      document.body.classList.add('overflow-hidden');
+    }
+
+    function closeSidebar() {
+      if (!sidebar) return;
+      sidebar.classList.remove('translate-x-0');
+      sidebar.classList.add('-translate-x-full');
+      if (overlay) overlay.classList.add('hidden');
+      document.body.classList.remove('overflow-hidden');
+    }
+
+    // Unified toggle: on mobile open/close overlay sidebar; on desktop toggle collapsed state
+    if (toggle) {
+      toggle.addEventListener('click', function(e) {
+        if (!sidebar) return;
+        try {
+          const isDesktop = window.innerWidth >= 768;
+          if (isDesktop) {
+            // act as collapse/expand on desktop
+            const isCollapsed = sidebar.classList.contains('collapsed');
+            setCollapsedState(!isCollapsed);
+          } else {
+            // act as mobile open/close
+            if (sidebar.classList.contains('-translate-x-full')) openSidebar(); else closeSidebar();
+          }
+        } catch (e) { console.warn('sidebar-toggle handler error', e); }
+      });
+    }
+
+    if (overlay) {
+      overlay.addEventListener('click', closeSidebar);
+    }
+
+    // Desktop collapse behaviour (reduces sidebar width)
+    function setCollapsedState(collapsed) {
+      try {
+        if (!sidebar) return;
+        if (collapsed) {
+          sidebar.classList.add('collapsed');
+          document.body.classList.add('sidebar-collapsed');
+        } else {
+          sidebar.classList.remove('collapsed');
+          document.body.classList.remove('sidebar-collapsed');
+        }
+        // also toggle main-shift if present
+        document.querySelectorAll('.main-shift').forEach(m => {
+          if (collapsed) m.classList.add('collapsed'); else m.classList.remove('collapsed');
+        });
+        // As a defensive visual fallback, set an inline width on desktop so
+        // CSS specificity issues don't prevent the sidebar from shrinking.
+        try {
+          const docStyle = getComputedStyle(document.documentElement);
+          const cW = docStyle.getPropertyValue('--sidebar-collapsed-width').trim() || '4rem';
+          const eW = docStyle.getPropertyValue('--sidebar-width').trim() || '16rem';
+          if (window.innerWidth >= 768) {
+            sidebar.style.width = collapsed ? cW : eW;
+          } else {
+            // clear inline width on mobile (overlay mode)
+            sidebar.style.width = '';
+          }
+        } catch (e) { /* ignore */ }
+
+        localStorage.setItem('sidebarCollapsed', collapsed ? '1' : '0');
+      } catch (e) { console.warn('setCollapsedState error', e); }
+    }
+
+    // If an old collapse button exists, wire it to the same setCollapsedState for compatibility
+    if (collapseBtn) {
+      collapseBtn.addEventListener('click', function() {
+        const isCollapsed = sidebar && sidebar.classList.contains('collapsed');
+        setCollapsedState(!isCollapsed);
+      });
+    }
+
+    // Restore previous collapsed state
+    try {
+      const saved = localStorage.getItem('sidebarCollapsed');
+      if (saved === '1') setCollapsedState(true);
+    } catch (e) {}
+
+    // Highlight active link in any sidebar or bottom nav present
+    try {
+      const path = window.location.pathname.replace(/\/$/, ''); // remove trailing slash
+      const markLink = (a) => {
+        const href = a.getAttribute('href') || '';
+        const cleanHref = href.replace(/\/$/, '');
+        if (cleanHref === '') return; // ignore empty anchors
+        if (path === cleanHref || path.startsWith(cleanHref + '/')) {
+          a.classList.add('text-teal-700', 'font-semibold');
+          a.classList.remove('text-gray-700');
+        } else {
+          a.classList.remove('text-teal-700', 'font-semibold');
+        }
+      };
+      document.querySelectorAll('#site-sidebar a').forEach(markLink);
+      document.querySelectorAll('#site-bottom-nav a').forEach(markLink);
+    } catch (e) {
+      console.warn('Sidebar highlight error', e);
+    }
+  });
+</script>
+<script>
+  // Fetch user-specific notification counts (appointment confirmations, password changes)
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      // Only attempt when the user badge element exists or bottom nav exists
+      const badge = document.getElementById('user-notif-badge');
+      const bottom = document.getElementById('site-bottom-nav');
+      // call API
+      fetch('/api/user/notification-counts', { credentials: 'same-origin' }).then(r => {
+        if (!r.ok) throw new Error('Not authenticated');
+        return r.json();
+      }).then(data => {
+        const total = (data && data.total) ? data.total : 0;
+        // update desktop badge
+        if (badge) {
+          if (total > 0) {
+            badge.textContent = String(total);
+            badge.classList.remove('hidden');
+          } else {
+            badge.classList.add('hidden');
+          }
+        }
+        // update cloned mobile bottom nav (if present)
+        if (bottom) {
+          // find any anchor that links to /user/notifications
+          const a = bottom.querySelector('a[href="/user/notifications"]');
+          if (a) {
+            // remove any existing badge children
+            const existing = a.querySelector('.user-bottom-badge');
+            if (existing) existing.remove();
+            if (total > 0) {
+              const b = document.createElement('span');
+              b.className = 'user-bottom-badge ml-1 inline-flex items-center justify-center px-2 py-0.5 text-xs font-medium bg-red-600 text-white rounded';
+              b.textContent = String(total);
+              a.appendChild(b);
+            }
+          }
+        }
+      }).catch(err => {
+        // ignore; not logged in or no permissions
+        // console.debug('notif count fetch failed', err);
+      });
+    } catch (e) { console.warn('user notif count script error', e); }
   });
 </script>
 </body>

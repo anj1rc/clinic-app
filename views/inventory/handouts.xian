@@ -1,12 +1,14 @@
 {{> head }}
 <body class="bg-white">
-  {{> navbar }}
   <div class="container mx-auto px-4 py-8">
-    <div class="flex items-center justify-between">
-      <h1 class="text-2xl font-bold">Handouts</h1>
-      <button id="btnAddHandout" class="bg-teal-600 text-white px-3 py-2 rounded">Add Handout</button>
-    </div>
-  <table class="w-full mt-4 table-auto border-collapse datatable">
+    <div class="flex gap-6">
+  {{> sidebar-admin }}
+  <main class="main-shift flex-1">
+        <div class="flex items-center justify-between">
+          <h1 class="text-2xl font-bold">Handouts</h1>
+          <button id="btnAddHandout" class="bg-teal-600 text-white px-3 py-2 rounded">Add Handout</button>
+        </div>
+  <table class="w-full mt-4 table-auto border-collapse datatable" id="handouts-table">
       <thead>
         <tr>
           <th class="border p-2">Medicine</th>
@@ -24,10 +26,13 @@
           <td class="border p-2">{{#if this.User}}{{this.User.name}}{{else}}-{{/if}}</td>
           <td class="border p-2">{{this.notes}}</td>
           <td class="border p-2">{{this.createdAt}}</td>
+          <td class="border p-2"><a href="/inventory/handouts/{{this.id}}/edit" class="text-blue-600 hover:underline">Edit</a></td>
         </tr>
         {{/each}}
       </tbody>
     </table>
+      </main>
+    </div>
   </div>
 
   <!-- New Handout Modal -->

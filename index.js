@@ -28,6 +28,7 @@ import path from "path";
 import session from "express-session";
 import flash from "connect-flash";
 import router from "./routes/index.js";
+import { User } from './models/index.js';
 import fs from 'fs';
 import hbs from "hbs";
 import { fileURLToPath } from "url";
@@ -71,6 +72,24 @@ app.engine("xian", async (filePath, options, callback) => {
 app.use((req, res, next) => {
   res.locals.success_msg = req.flash("success_msg");
   res.locals.error_msg = req.flash("error_msg");
+  next();
+});
+
+// load current user and notifications into res.locals for views (optional lightweight middleware)
+app.use(async (req, res, next) => {
+  try {
+    res.locals.user = null;
+    res.locals.notifCount = 0;
+    res.locals.notifications = [];
+    if (req.session?.userId) {
+      const u = await User.findByPk(req.session.userId);
+      if (u) {
+        res.locals.user = { id: u.id, name: u.name, role: u.role, email: u.email, avatarUrl: u.avatarUrl };
+      }
+    }
+  } catch (err) {
+    console.error('res.locals middleware error', err);
+  }
   next();
 });
 

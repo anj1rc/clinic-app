@@ -1,9 +1,11 @@
 {{> head }}
 <body class="bg-white">
-  {{> navbar }}
   <div class="container mx-auto px-4 py-8">
-    <h1 class="text-2xl font-bold">Medicines</h1>
-  <table class="w-full mt-4 table-auto border-collapse datatable">
+    <div class="flex gap-6">
+      {{> sidebar-admin }}
+      <main class="main-shift flex-1">
+        <h1 class="text-2xl font-bold">Medicines</h1>
+        <table class="w-full mt-4 table-auto border-collapse datatable">
       <thead>
         <tr>
           <th class="border p-2">Name</th>
@@ -19,9 +21,14 @@
           <td class="border p-2">{{this.sku}}</td>
           <td class="border p-2">{{this.stock}}</td>
           <td class="border p-2">{{this.unit}}</td>
+          <td class="border p-2">
+            <a href="/inventory/medicines/{{this.id}}/edit" class="text-blue-600 hover:underline">Edit</a>
+          </td>
         </tr>
         {{/each}}
       </tbody>
-    </table>
+        </table>
+      </main>
+    </div>
   </div>
 {{> footer }}

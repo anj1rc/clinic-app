@@ -1,8 +1,31 @@
 {{> head }}
 <body class="bg-white">
-  {{> navbar }}
   <div class="container mx-auto px-4 py-8">
     <h1 class="text-2xl font-bold">Appointments</h1>
-    <p class="mt-2">Appointments placeholder.</p>
+    <p class="mt-2">All appointments</p>
+    <div class="mt-4 bg-white rounded shadow">
+      <table class="w-full datatable">
+        <thead>
+          <tr>
+            <th class="border p-2">Date</th>
+            <th class="border p-2">Time</th>
+            <th class="border p-2">Patient</th>
+            <th class="border p-2">Type</th>
+            <th class="border p-2">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each appts}}
+          <tr>
+            <td class="border p-2">{{this.date}}</td>
+            <td class="border p-2">{{this.time}}</td>
+            <td class="border p-2">{{#if this.User}}{{this.User.name}}{{else}}-{{/if}}</td>
+            <td class="border p-2">{{this.type}}</td>
+            <td class="border p-2">{{this.status}}</td>
+          </tr>
+          {{/each}}
+        </tbody>
+      </table>
+    </div>
   </div>
 {{> footer }}
